@@ -1149,7 +1149,7 @@ PhoneNumberInput.defaultProps = {
    * By default, uses icons from `country-flag-icons` gitlab pages website.
    */
   // Must be equal to `flagUrl` in `./CountryIcon.js`.
-  flagUrl: "/img/country-flag-icons/3x2/{XX}.svg",
+  flagUrl: "/assets/img/country-flag-icons/3x2/{XX}.svg",
   /**
    * Default "International" country `<select/>` option icon.
    */
