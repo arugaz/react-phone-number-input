@@ -1,171 +1,428 @@
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-var _excluded = ["name", "disabled", "readOnly", "autoComplete", "style", "className", "inputRef", "inputComponent", "numberInputProps", "smartCaret", "countrySelectComponent", "countrySelectProps", "containerComponent", "defaultCountry", "countries", "countryOptionsOrder", "labels", "flags", "flagComponent", "flagUrl", "addInternationalOption", "internationalIcon", "displayInitialValueAsLocalNumber", "initialValueFormat", "onCountryChange", "limitMaxLength", "countryCallingCodeEditable", "focusInputOnCountrySelection", "reset", "metadata", "international", "locales"];
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
-function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import InputSmart from './InputSmart.js';
-import InputBasic from './InputBasic.js';
-import { CountrySelectWithIcon as CountrySelect } from './CountrySelect.js';
-import Flag from './Flag.js';
-import InternationalIcon from './InternationalIcon.js';
-import { sortCountryOptions, isCountrySupportedWithError, getSupportedCountries, getSupportedCountryOptions, getCountries } from './helpers/countries.js';
-import { createCountryIconComponent } from './CountryIcon.js';
-import { metadata as metadataPropType, labels as labelsPropType } from './PropTypes.js';
-import { getPreSelectedCountry, getCountrySelectOptions as _getCountrySelectOptions, parsePhoneNumber, generateNationalNumberDigits, getPhoneDigitsForNewCountry, getInitialPhoneDigits, onPhoneDigitsChange, e164 } from './helpers/phoneInputHelpers.js';
-import getPhoneInputWithCountryStateUpdateFromNewProps from './helpers/getPhoneInputWithCountryStateUpdateFromNewProps.js';
-var PhoneNumberInput_ = /*#__PURE__*/function (_React$PureComponent) {
+function _typeof(obj) {
+  "@babel/helpers - typeof";
+  return (
+    (_typeof =
+      "function" == typeof Symbol && "symbol" == typeof Symbol.iterator
+        ? function (obj) {
+            return typeof obj;
+          }
+        : function (obj) {
+            return obj &&
+              "function" == typeof Symbol &&
+              obj.constructor === Symbol &&
+              obj !== Symbol.prototype
+              ? "symbol"
+              : typeof obj;
+          }),
+    _typeof(obj)
+  );
+}
+var _excluded = [
+  "name",
+  "disabled",
+  "readOnly",
+  "autoComplete",
+  "style",
+  "className",
+  "inputRef",
+  "inputComponent",
+  "numberInputProps",
+  "smartCaret",
+  "countrySelectComponent",
+  "countrySelectProps",
+  "containerComponent",
+  "defaultCountry",
+  "countries",
+  "countryOptionsOrder",
+  "labels",
+  "flags",
+  "flagComponent",
+  "flagUrl",
+  "addInternationalOption",
+  "internationalIcon",
+  "displayInitialValueAsLocalNumber",
+  "initialValueFormat",
+  "onCountryChange",
+  "limitMaxLength",
+  "countryCallingCodeEditable",
+  "focusInputOnCountrySelection",
+  "reset",
+  "metadata",
+  "international",
+  "locales",
+];
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    enumerableOnly &&
+      (symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      })),
+      keys.push.apply(keys, symbols);
+  }
+  return keys;
+}
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = null != arguments[i] ? arguments[i] : {};
+    i % 2
+      ? ownKeys(Object(source), !0).forEach(function (key) {
+          _defineProperty(target, key, source[key]);
+        })
+      : Object.getOwnPropertyDescriptors
+      ? Object.defineProperties(
+          target,
+          Object.getOwnPropertyDescriptors(source)
+        )
+      : ownKeys(Object(source)).forEach(function (key) {
+          Object.defineProperty(
+            target,
+            key,
+            Object.getOwnPropertyDescriptor(source, key)
+          );
+        });
+  }
+  return target;
+}
+function _extends() {
+  _extends = Object.assign
+    ? Object.assign.bind()
+    : function (target) {
+        for (var i = 1; i < arguments.length; i++) {
+          var source = arguments[i];
+          for (var key in source) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) {
+              target[key] = source[key];
+            }
+          }
+        }
+        return target;
+      };
+  return _extends.apply(this, arguments);
+}
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+  var key, i;
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+  return target;
+}
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  Object.defineProperty(Constructor, "prototype", { writable: false });
+  return Constructor;
+}
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: { value: subClass, writable: true, configurable: true },
+  });
+  Object.defineProperty(subClass, "prototype", { writable: false });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf
+    ? Object.setPrototypeOf.bind()
+    : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+  return _setPrototypeOf(o, p);
+}
+function _createSuper(Derived) {
+  var hasNativeReflectConstruct = _isNativeReflectConstruct();
+  return function _createSuperInternal() {
+    var Super = _getPrototypeOf(Derived),
+      result;
+    if (hasNativeReflectConstruct) {
+      var NewTarget = _getPrototypeOf(this).constructor;
+      result = Reflect.construct(Super, arguments, NewTarget);
+    } else {
+      result = Super.apply(this, arguments);
+    }
+    return _possibleConstructorReturn(this, result);
+  };
+}
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  } else if (call !== void 0) {
+    throw new TypeError(
+      "Derived constructors may only return object or undefined"
+    );
+  }
+  return _assertThisInitialized(self);
+}
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError(
+      "this hasn't been initialised - super() hasn't been called"
+    );
+  }
+  return self;
+}
+function _isNativeReflectConstruct() {
+  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+  if (Reflect.construct.sham) return false;
+  if (typeof Proxy === "function") return true;
+  try {
+    Boolean.prototype.valueOf.call(
+      Reflect.construct(Boolean, [], function () {})
+    );
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf
+    ? Object.getPrototypeOf.bind()
+    : function _getPrototypeOf(o) {
+        return o.__proto__ || Object.getPrototypeOf(o);
+      };
+  return _getPrototypeOf(o);
+}
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true,
+    });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+import React from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
+import InputSmart from "./InputSmart.js";
+import InputBasic from "./InputBasic.js";
+import { CountrySelectWithIcon as CountrySelect } from "./CountrySelect.js";
+import Flag from "./Flag.js";
+import InternationalIcon from "./InternationalIcon.js";
+import {
+  sortCountryOptions,
+  isCountrySupportedWithError,
+  getSupportedCountries,
+  getSupportedCountryOptions,
+  getCountries,
+} from "./helpers/countries.js";
+import { createCountryIconComponent } from "./CountryIcon.js";
+import {
+  metadata as metadataPropType,
+  labels as labelsPropType,
+} from "./PropTypes.js";
+import {
+  getPreSelectedCountry,
+  getCountrySelectOptions as _getCountrySelectOptions,
+  parsePhoneNumber,
+  generateNationalNumberDigits,
+  getPhoneDigitsForNewCountry,
+  getInitialPhoneDigits,
+  onPhoneDigitsChange,
+  e164,
+} from "./helpers/phoneInputHelpers.js";
+import getPhoneInputWithCountryStateUpdateFromNewProps from "./helpers/getPhoneInputWithCountryStateUpdateFromNewProps.js";
+var PhoneNumberInput_ = /*#__PURE__*/ (function (_React$PureComponent) {
   _inherits(PhoneNumberInput_, _React$PureComponent);
   var _super = _createSuper(PhoneNumberInput_);
   function PhoneNumberInput_(props) {
     var _this;
     _classCallCheck(this, PhoneNumberInput_);
     _this = _super.call(this, props);
-    _defineProperty(_assertThisInitialized(_this), "setInputRef", function (instance) {
-      _this.inputRef.current = instance;
-      var ref = _this.props.inputRef;
-      if (ref) {
-        if (typeof ref === 'function') {
-          ref(instance);
-        } else {
-          ref.current = instance;
+    _defineProperty(
+      _assertThisInitialized(_this),
+      "setInputRef",
+      function (instance) {
+        _this.inputRef.current = instance;
+        var ref = _this.props.inputRef;
+        if (ref) {
+          if (typeof ref === "function") {
+            ref(instance);
+          } else {
+            ref.current = instance;
+          }
         }
       }
-    });
-    _defineProperty(_assertThisInitialized(_this), "isCountrySupportedWithError", function (country) {
-      var metadata = _this.props.metadata;
-      return isCountrySupportedWithError(country, metadata);
-    });
-    _defineProperty(_assertThisInitialized(_this), "onCountryChange", function (newCountry) {
-      var _this$props = _this.props,
-        international = _this$props.international,
-        metadata = _this$props.metadata,
-        onChange = _this$props.onChange,
-        focusInputOnCountrySelection = _this$props.focusInputOnCountrySelection;
-      var _this$state = _this.state,
-        prevPhoneDigits = _this$state.phoneDigits,
-        prevCountry = _this$state.country;
-
-      // After the new `country` has been selected,
-      // if the phone number `<input/>` holds any digits
-      // then migrate those digits for the new `country`.
-      var newPhoneDigits = getPhoneDigitsForNewCountry(prevPhoneDigits, {
-        prevCountry: prevCountry,
-        newCountry: newCountry,
-        metadata: metadata,
-        // Convert the phone number to "national" format
-        // when the user changes the selected country by hand.
-        useNationalFormat: !international
-      });
-      var newValue = e164(newPhoneDigits, newCountry, metadata);
-
-      // Focus phone number `<input/>` upon country selection.
-      if (focusInputOnCountrySelection) {
-        _this.inputRef.current.focus();
+    );
+    _defineProperty(
+      _assertThisInitialized(_this),
+      "isCountrySupportedWithError",
+      function (country) {
+        var metadata = _this.props.metadata;
+        return isCountrySupportedWithError(country, metadata);
       }
+    );
+    _defineProperty(
+      _assertThisInitialized(_this),
+      "onCountryChange",
+      function (newCountry) {
+        var _this$props = _this.props,
+          international = _this$props.international,
+          metadata = _this$props.metadata,
+          onChange = _this$props.onChange,
+          focusInputOnCountrySelection =
+            _this$props.focusInputOnCountrySelection;
+        var _this$state = _this.state,
+          prevPhoneDigits = _this$state.phoneDigits,
+          prevCountry = _this$state.country;
 
-      // If the user has already manually selected a country
-      // then don't override that already selected country
-      // if the `defaultCountry` property changes.
-      // That's what `hasUserSelectedACountry` flag is for.
+        // After the new `country` has been selected,
+        // if the phone number `<input/>` holds any digits
+        // then migrate those digits for the new `country`.
+        var newPhoneDigits = getPhoneDigitsForNewCountry(prevPhoneDigits, {
+          prevCountry: prevCountry,
+          newCountry: newCountry,
+          metadata: metadata,
+          // Convert the phone number to "national" format
+          // when the user changes the selected country by hand.
+          useNationalFormat: !international,
+        });
+        var newValue = e164(newPhoneDigits, newCountry, metadata);
 
-      _this.setState({
-        country: newCountry,
-        hasUserSelectedACountry: true,
-        phoneDigits: newPhoneDigits,
-        value: newValue
-      }, function () {
-        // Update the new `value` property.
-        // Doing it after the `state` has been updated
-        // because `onChange()` will trigger `getDerivedStateFromProps()`
-        // with the new `value` which will be compared to `state.value` there.
-        onChange(newValue);
-      });
-    });
-    _defineProperty(_assertThisInitialized(_this), "onChange", function (_phoneDigits) {
-      var _this$props2 = _this.props,
-        defaultCountry = _this$props2.defaultCountry,
-        onChange = _this$props2.onChange,
-        addInternationalOption = _this$props2.addInternationalOption,
-        international = _this$props2.international,
-        limitMaxLength = _this$props2.limitMaxLength,
-        countryCallingCodeEditable = _this$props2.countryCallingCodeEditable,
-        metadata = _this$props2.metadata;
-      var _this$state2 = _this.state,
-        countries = _this$state2.countries,
-        prevPhoneDigits = _this$state2.phoneDigits,
-        currentlySelectedCountry = _this$state2.country;
-      var _onPhoneDigitsChange = onPhoneDigitsChange(_phoneDigits, {
-          prevPhoneDigits: prevPhoneDigits,
-          country: currentlySelectedCountry,
-          countryRequired: !addInternationalOption,
-          defaultCountry: defaultCountry,
-          getAnyCountry: function getAnyCountry() {
-            return _this.getFirstSupportedCountry({
-              countries: countries
-            });
+        // Focus phone number `<input/>` upon country selection.
+        if (focusInputOnCountrySelection) {
+          _this.inputRef.current.focus();
+        }
+
+        // If the user has already manually selected a country
+        // then don't override that already selected country
+        // if the `defaultCountry` property changes.
+        // That's what `hasUserSelectedACountry` flag is for.
+
+        _this.setState(
+          {
+            country: newCountry,
+            hasUserSelectedACountry: true,
+            phoneDigits: newPhoneDigits,
+            value: newValue,
           },
-          countries: countries,
-          international: international,
-          limitMaxLength: limitMaxLength,
-          countryCallingCodeEditable: countryCallingCodeEditable,
-          metadata: metadata
-        }),
-        phoneDigits = _onPhoneDigitsChange.phoneDigits,
-        country = _onPhoneDigitsChange.country,
-        value = _onPhoneDigitsChange.value;
-      var stateUpdate = {
-        phoneDigits: phoneDigits,
-        value: value,
-        country: country
-      };
-      if (countryCallingCodeEditable === false) {
-        // If it simply did `setState({ phoneDigits: intlPrefix })` here,
-        // then it would have no effect when erasing an inital international prefix
-        // via Backspace, because `phoneDigits` in `state` wouldn't change
-        // as a result, because it was `prefix` and it became `prefix`,
-        // so the component wouldn't rerender, and the user would be able
-        // to erase the country calling code part, and that part is
-        // assumed to be non-eraseable. That's why the component is
-        // forcefully rerendered here.
-        // https://github.com/catamphetamine/react-phone-number-input/issues/367#issuecomment-721703501
-        if (!value && phoneDigits === _this.state.phoneDigits) {
-          // Force a re-render of the `<input/>` in order to reset its value.
-          stateUpdate.forceRerender = {};
-        }
+          function () {
+            // Update the new `value` property.
+            // Doing it after the `state` has been updated
+            // because `onChange()` will trigger `getDerivedStateFromProps()`
+            // with the new `value` which will be compared to `state.value` there.
+            onChange(newValue);
+          }
+        );
       }
-      _this.setState(stateUpdate,
-      // Update the new `value` property.
-      // Doing it after the `state` has been updated
-      // because `onChange()` will trigger `getDerivedStateFromProps()`
-      // with the new `value` which will be compared to `state.value` there.
-      function () {
-        return onChange(value);
-      });
-    });
+    );
+    _defineProperty(
+      _assertThisInitialized(_this),
+      "onChange",
+      function (_phoneDigits) {
+        var _this$props2 = _this.props,
+          defaultCountry = _this$props2.defaultCountry,
+          onChange = _this$props2.onChange,
+          addInternationalOption = _this$props2.addInternationalOption,
+          international = _this$props2.international,
+          limitMaxLength = _this$props2.limitMaxLength,
+          countryCallingCodeEditable = _this$props2.countryCallingCodeEditable,
+          metadata = _this$props2.metadata;
+        var _this$state2 = _this.state,
+          countries = _this$state2.countries,
+          prevPhoneDigits = _this$state2.phoneDigits,
+          currentlySelectedCountry = _this$state2.country;
+        var _onPhoneDigitsChange = onPhoneDigitsChange(_phoneDigits, {
+            prevPhoneDigits: prevPhoneDigits,
+            country: currentlySelectedCountry,
+            countryRequired: !addInternationalOption,
+            defaultCountry: defaultCountry,
+            getAnyCountry: function getAnyCountry() {
+              return _this.getFirstSupportedCountry({
+                countries: countries,
+              });
+            },
+            countries: countries,
+            international: international,
+            limitMaxLength: limitMaxLength,
+            countryCallingCodeEditable: countryCallingCodeEditable,
+            metadata: metadata,
+          }),
+          phoneDigits = _onPhoneDigitsChange.phoneDigits,
+          country = _onPhoneDigitsChange.country,
+          value = _onPhoneDigitsChange.value;
+        var stateUpdate = {
+          phoneDigits: phoneDigits,
+          value: value,
+          country: country,
+        };
+        if (countryCallingCodeEditable === false) {
+          // If it simply did `setState({ phoneDigits: intlPrefix })` here,
+          // then it would have no effect when erasing an inital international prefix
+          // via Backspace, because `phoneDigits` in `state` wouldn't change
+          // as a result, because it was `prefix` and it became `prefix`,
+          // so the component wouldn't rerender, and the user would be able
+          // to erase the country calling code part, and that part is
+          // assumed to be non-eraseable. That's why the component is
+          // forcefully rerendered here.
+          // https://github.com/catamphetamine/react-phone-number-input/issues/367#issuecomment-721703501
+          if (!value && phoneDigits === _this.state.phoneDigits) {
+            // Force a re-render of the `<input/>` in order to reset its value.
+            stateUpdate.forceRerender = {};
+          }
+        }
+        _this.setState(
+          stateUpdate,
+          // Update the new `value` property.
+          // Doing it after the `state` has been updated
+          // because `onChange()` will trigger `getDerivedStateFromProps()`
+          // with the new `value` which will be compared to `state.value` there.
+          function () {
+            return onChange(value);
+          }
+        );
+      }
+    );
     _defineProperty(_assertThisInitialized(_this), "_onFocus", function () {
       return _this.setState({
-        isFocused: true
+        isFocused: true,
       });
     });
     _defineProperty(_assertThisInitialized(_this), "_onBlur", function () {
       return _this.setState({
-        isFocused: false
+        isFocused: false,
       });
     });
     _defineProperty(_assertThisInitialized(_this), "onFocus", function (event) {
@@ -182,35 +439,44 @@ var PhoneNumberInput_ = /*#__PURE__*/function (_React$PureComponent) {
         onBlur(event);
       }
     });
-    _defineProperty(_assertThisInitialized(_this), "onCountryFocus", function (event) {
-      _this._onFocus();
-      // this.setState({ countrySelectFocused: true })
-      var countrySelectProps = _this.props.countrySelectProps;
-      if (countrySelectProps) {
-        var onFocus = countrySelectProps.onFocus;
-        if (onFocus) {
-          onFocus(event);
+    _defineProperty(
+      _assertThisInitialized(_this),
+      "onCountryFocus",
+      function (event) {
+        _this._onFocus();
+        // this.setState({ countrySelectFocused: true })
+        var countrySelectProps = _this.props.countrySelectProps;
+        if (countrySelectProps) {
+          var onFocus = countrySelectProps.onFocus;
+          if (onFocus) {
+            onFocus(event);
+          }
         }
       }
-    });
-    _defineProperty(_assertThisInitialized(_this), "onCountryBlur", function (event) {
-      _this._onBlur();
-      // this.setState({ countrySelectFocused: false })
-      var countrySelectProps = _this.props.countrySelectProps;
-      if (countrySelectProps) {
-        var onBlur = countrySelectProps.onBlur;
-        if (onBlur) {
-          onBlur(event);
+    );
+    _defineProperty(
+      _assertThisInitialized(_this),
+      "onCountryBlur",
+      function (event) {
+        _this._onBlur();
+        // this.setState({ countrySelectFocused: false })
+        var countrySelectProps = _this.props.countrySelectProps;
+        if (countrySelectProps) {
+          var onBlur = countrySelectProps.onBlur;
+          if (onBlur) {
+            onBlur(event);
+          }
         }
       }
-    });
-    _this.inputRef = /*#__PURE__*/React.createRef();
+    );
+    _this.inputRef = /*#__PURE__*/ React.createRef();
     var _this$props3 = _this.props,
       _value = _this$props3.value,
       labels = _this$props3.labels,
       _international = _this$props3.international,
       _addInternationalOption = _this$props3.addInternationalOption,
-      displayInitialValueAsLocalNumber = _this$props3.displayInitialValueAsLocalNumber,
+      displayInitialValueAsLocalNumber =
+        _this$props3.displayInitialValueAsLocalNumber,
       initialValueFormat = _this$props3.initialValueFormat,
       _metadata = _this$props3.metadata;
     var _this$props4 = _this.props,
@@ -236,10 +502,10 @@ var PhoneNumberInput_ = /*#__PURE__*/function (_React$PureComponent) {
       countries: _countries || getCountries(_metadata),
       getAnyCountry: function getAnyCountry() {
         return _this.getFirstSupportedCountry({
-          countries: _countries
+          countries: _countries,
         });
       },
-      metadata: _metadata
+      metadata: _metadata,
     });
     _this.state = {
       // Workaround for `this.props` inside `getDerivedStateFromProps()`.
@@ -268,8 +534,9 @@ var PhoneNumberInput_ = /*#__PURE__*/function (_React$PureComponent) {
         phoneNumber: phoneNumber,
         defaultCountry: _defaultCountry,
         international: _international,
-        useNationalFormat: displayInitialValueAsLocalNumber || initialValueFormat === 'national',
-        metadata: _metadata
+        useNationalFormat:
+          displayInitialValueAsLocalNumber || initialValueFormat === "national",
+        metadata: _metadata,
       }),
       // `value` property is duplicated in state.
       // The reason is that `getDerivedStateFromProps()`
@@ -278,183 +545,259 @@ var PhoneNumberInput_ = /*#__PURE__*/function (_React$PureComponent) {
       // If the `value` property was changed externally
       // then it won't be equal to `state.value`
       // in which case `phoneDigits` and `country` should be updated.
-      value: _value
+      value: _value,
     };
     return _this;
   }
-  _createClass(PhoneNumberInput_, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var onCountryChange = this.props.onCountryChange;
-      var defaultCountry = this.props.defaultCountry;
-      var selectedCountry = this.state.country;
-      if (onCountryChange) {
-        if (defaultCountry) {
-          if (!this.isCountrySupportedWithError(defaultCountry)) {
-            defaultCountry = undefined;
+  _createClass(
+    PhoneNumberInput_,
+    [
+      {
+        key: "componentDidMount",
+        value: function componentDidMount() {
+          var onCountryChange = this.props.onCountryChange;
+          var defaultCountry = this.props.defaultCountry;
+          var selectedCountry = this.state.country;
+          if (onCountryChange) {
+            if (defaultCountry) {
+              if (!this.isCountrySupportedWithError(defaultCountry)) {
+                defaultCountry = undefined;
+              }
+            }
+            if (selectedCountry !== defaultCountry) {
+              onCountryChange(selectedCountry);
+            }
           }
-        }
-        if (selectedCountry !== defaultCountry) {
-          onCountryChange(selectedCountry);
-        }
-      }
-    }
-  }, {
-    key: "componentDidUpdate",
-    value: function componentDidUpdate(prevProps, prevState) {
-      var onCountryChange = this.props.onCountryChange;
-      var country = this.state.country;
-      // Call `onCountryChange` when user selects another country.
-      if (onCountryChange && country !== prevState.country) {
-        onCountryChange(country);
-      }
-    }
-  }, {
-    key: "getCountrySelectOptions",
-    value: function getCountrySelectOptions(_ref) {
-      var countries = _ref.countries;
-      var _this$props5 = this.props,
-        international = _this$props5.international,
-        countryCallingCodeEditable = _this$props5.countryCallingCodeEditable,
-        countryOptionsOrder = _this$props5.countryOptionsOrder,
-        addInternationalOption = _this$props5.addInternationalOption,
-        labels = _this$props5.labels,
-        locales = _this$props5.locales,
-        metadata = _this$props5.metadata;
-      return this.useMemoCountrySelectOptions(function () {
-        return sortCountryOptions(_getCountrySelectOptions({
-          countries: countries || getCountries(metadata),
-          countryNames: labels,
-          addInternationalOption: international && countryCallingCodeEditable === false ? false : addInternationalOption,
-          compareStringsLocales: locales
-          // compareStrings
-        }), getSupportedCountryOptions(countryOptionsOrder, metadata));
-      }, [countries, countryOptionsOrder, addInternationalOption, labels, metadata]);
-    }
-  }, {
-    key: "useMemoCountrySelectOptions",
-    value: function useMemoCountrySelectOptions(generator, dependencies) {
-      if (!this.countrySelectOptionsMemoDependencies || !areEqualArrays(dependencies, this.countrySelectOptionsMemoDependencies)) {
-        this.countrySelectOptionsMemo = generator();
-        this.countrySelectOptionsMemoDependencies = dependencies;
-      }
-      return this.countrySelectOptionsMemo;
-    }
-  }, {
-    key: "getFirstSupportedCountry",
-    value: function getFirstSupportedCountry(_ref2) {
-      var countries = _ref2.countries;
-      var countryOptions = this.getCountrySelectOptions({
-        countries: countries
-      });
-      return countryOptions[0].value;
-    }
+        },
+      },
+      {
+        key: "componentDidUpdate",
+        value: function componentDidUpdate(prevProps, prevState) {
+          var onCountryChange = this.props.onCountryChange;
+          var country = this.state.country;
+          // Call `onCountryChange` when user selects another country.
+          if (onCountryChange && country !== prevState.country) {
+            onCountryChange(country);
+          }
+        },
+      },
+      {
+        key: "getCountrySelectOptions",
+        value: function getCountrySelectOptions(_ref) {
+          var countries = _ref.countries;
+          var _this$props5 = this.props,
+            international = _this$props5.international,
+            countryCallingCodeEditable =
+              _this$props5.countryCallingCodeEditable,
+            countryOptionsOrder = _this$props5.countryOptionsOrder,
+            addInternationalOption = _this$props5.addInternationalOption,
+            labels = _this$props5.labels,
+            locales = _this$props5.locales,
+            metadata = _this$props5.metadata;
+          return this.useMemoCountrySelectOptions(
+            function () {
+              return sortCountryOptions(
+                _getCountrySelectOptions({
+                  countries: countries || getCountries(metadata),
+                  countryNames: labels,
+                  addInternationalOption:
+                    international && countryCallingCodeEditable === false
+                      ? false
+                      : addInternationalOption,
+                  compareStringsLocales: locales,
+                  // compareStrings
+                }),
+                getSupportedCountryOptions(countryOptionsOrder, metadata)
+              );
+            },
+            [
+              countries,
+              countryOptionsOrder,
+              addInternationalOption,
+              labels,
+              metadata,
+            ]
+          );
+        },
+      },
+      {
+        key: "useMemoCountrySelectOptions",
+        value: function useMemoCountrySelectOptions(generator, dependencies) {
+          if (
+            !this.countrySelectOptionsMemoDependencies ||
+            !areEqualArrays(
+              dependencies,
+              this.countrySelectOptionsMemoDependencies
+            )
+          ) {
+            this.countrySelectOptionsMemo = generator();
+            this.countrySelectOptionsMemoDependencies = dependencies;
+          }
+          return this.countrySelectOptionsMemo;
+        },
+      },
+      {
+        key: "getFirstSupportedCountry",
+        value: function getFirstSupportedCountry(_ref2) {
+          var countries = _ref2.countries;
+          var countryOptions = this.getCountrySelectOptions({
+            countries: countries,
+          });
+          return countryOptions[0].value;
+        },
 
-    // A shorthand for not passing `metadata` as a second argument.
-  }, {
-    key: "render",
-    value: function render() {
-      var _this$props6 = this.props,
-        name = _this$props6.name,
-        disabled = _this$props6.disabled,
-        readOnly = _this$props6.readOnly,
-        autoComplete = _this$props6.autoComplete,
-        style = _this$props6.style,
-        className = _this$props6.className,
-        inputRef = _this$props6.inputRef,
-        inputComponent = _this$props6.inputComponent,
-        numberInputProps = _this$props6.numberInputProps,
-        smartCaret = _this$props6.smartCaret,
-        CountrySelectComponent = _this$props6.countrySelectComponent,
-        countrySelectProps = _this$props6.countrySelectProps,
-        ContainerComponent = _this$props6.containerComponent,
-        defaultCountry = _this$props6.defaultCountry,
-        countriesProperty = _this$props6.countries,
-        countryOptionsOrder = _this$props6.countryOptionsOrder,
-        labels = _this$props6.labels,
-        flags = _this$props6.flags,
-        flagComponent = _this$props6.flagComponent,
-        flagUrl = _this$props6.flagUrl,
-        addInternationalOption = _this$props6.addInternationalOption,
-        internationalIcon = _this$props6.internationalIcon,
-        displayInitialValueAsLocalNumber = _this$props6.displayInitialValueAsLocalNumber,
-        initialValueFormat = _this$props6.initialValueFormat,
-        onCountryChange = _this$props6.onCountryChange,
-        limitMaxLength = _this$props6.limitMaxLength,
-        countryCallingCodeEditable = _this$props6.countryCallingCodeEditable,
-        focusInputOnCountrySelection = _this$props6.focusInputOnCountrySelection,
-        reset = _this$props6.reset,
-        metadata = _this$props6.metadata,
-        international = _this$props6.international,
-        locales = _this$props6.locales,
-        rest = _objectWithoutProperties(_this$props6, _excluded);
-      var _this$state3 = this.state,
-        country = _this$state3.country,
-        countries = _this$state3.countries,
-        phoneDigits = _this$state3.phoneDigits,
-        isFocused = _this$state3.isFocused;
-      var InputComponent = smartCaret ? InputSmart : InputBasic;
-      var countrySelectOptions = this.getCountrySelectOptions({
-        countries: countries
-      });
-      return /*#__PURE__*/React.createElement(ContainerComponent, {
-        style: style,
-        className: classNames(className, 'PhoneInput', {
-          'PhoneInput--focus': isFocused,
-          'PhoneInput--disabled': disabled,
-          'PhoneInput--readOnly': readOnly
-        })
-      }, /*#__PURE__*/React.createElement(CountrySelectComponent, _extends({
-        name: name ? "".concat(name, "Country") : undefined,
-        "aria-label": labels.country
-      }, countrySelectProps, {
-        value: country,
-        options: countrySelectOptions,
-        onChange: this.onCountryChange,
-        onFocus: this.onCountryFocus,
-        onBlur: this.onCountryBlur,
-        disabled: disabled || countrySelectProps && countrySelectProps.disabled,
-        readOnly: readOnly || countrySelectProps && countrySelectProps.readOnly,
-        iconComponent: this.CountryIcon
-      })), /*#__PURE__*/React.createElement(InputComponent, _extends({
-        ref: this.setInputRef,
-        type: "tel",
-        autoComplete: autoComplete
-      }, numberInputProps, rest, {
-        name: name,
-        metadata: metadata,
-        country: country,
-        value: phoneDigits || '',
-        onChange: this.onChange,
-        onFocus: this.onFocus,
-        onBlur: this.onBlur,
-        disabled: disabled,
-        readOnly: readOnly,
-        inputComponent: inputComponent,
-        className: classNames('PhoneInputInput', numberInputProps && numberInputProps.className, rest.className)
-      })));
-    }
-  }], [{
-    key: "getDerivedStateFromProps",
-    value:
-    // `state` holds previous props as `props`, and also:
-    // * `country` — The currently selected country, e.g. `"RU"`.
-    // * `value` — The currently entered phone number (E.164), e.g. `+78005553535`.
-    // * `phoneDigits` — The parsed `<input/>` value, e.g. `8005553535`.
-    // (and a couple of other less significant properties)
-    function getDerivedStateFromProps(props, state) {
-      return _objectSpread({
-        // Emulate `prevProps` via `state.props`.
-        props: props
-      }, getPhoneInputWithCountryStateUpdateFromNewProps(props, state.props, state));
-    }
-  }]);
+        // A shorthand for not passing `metadata` as a second argument.
+      },
+      {
+        key: "render",
+        value: function render() {
+          var _this$props6 = this.props,
+            name = _this$props6.name,
+            disabled = _this$props6.disabled,
+            readOnly = _this$props6.readOnly,
+            autoComplete = _this$props6.autoComplete,
+            style = _this$props6.style,
+            className = _this$props6.className,
+            inputRef = _this$props6.inputRef,
+            inputComponent = _this$props6.inputComponent,
+            numberInputProps = _this$props6.numberInputProps,
+            smartCaret = _this$props6.smartCaret,
+            CountrySelectComponent = _this$props6.countrySelectComponent,
+            countrySelectProps = _this$props6.countrySelectProps,
+            ContainerComponent = _this$props6.containerComponent,
+            defaultCountry = _this$props6.defaultCountry,
+            countriesProperty = _this$props6.countries,
+            countryOptionsOrder = _this$props6.countryOptionsOrder,
+            labels = _this$props6.labels,
+            flags = _this$props6.flags,
+            flagComponent = _this$props6.flagComponent,
+            flagUrl = _this$props6.flagUrl,
+            addInternationalOption = _this$props6.addInternationalOption,
+            internationalIcon = _this$props6.internationalIcon,
+            displayInitialValueAsLocalNumber =
+              _this$props6.displayInitialValueAsLocalNumber,
+            initialValueFormat = _this$props6.initialValueFormat,
+            onCountryChange = _this$props6.onCountryChange,
+            limitMaxLength = _this$props6.limitMaxLength,
+            countryCallingCodeEditable =
+              _this$props6.countryCallingCodeEditable,
+            focusInputOnCountrySelection =
+              _this$props6.focusInputOnCountrySelection,
+            reset = _this$props6.reset,
+            metadata = _this$props6.metadata,
+            international = _this$props6.international,
+            locales = _this$props6.locales,
+            rest = _objectWithoutProperties(_this$props6, _excluded);
+          var _this$state3 = this.state,
+            country = _this$state3.country,
+            countries = _this$state3.countries,
+            phoneDigits = _this$state3.phoneDigits,
+            isFocused = _this$state3.isFocused;
+          var InputComponent = smartCaret ? InputSmart : InputBasic;
+          var countrySelectOptions = this.getCountrySelectOptions({
+            countries: countries,
+          });
+          return /*#__PURE__*/ React.createElement(
+            ContainerComponent,
+            {
+              style: style,
+              className: classNames(className, "PhoneInput", {
+                "PhoneInput--focus": isFocused,
+                "PhoneInput--disabled": disabled,
+                "PhoneInput--readOnly": readOnly,
+              }),
+            },
+            /*#__PURE__*/ React.createElement(
+              CountrySelectComponent,
+              _extends(
+                {
+                  name: name ? "".concat(name, "Country") : undefined,
+                  "aria-label": labels.country,
+                },
+                countrySelectProps,
+                {
+                  value: country,
+                  options: countrySelectOptions,
+                  onChange: this.onCountryChange,
+                  onFocus: this.onCountryFocus,
+                  onBlur: this.onCountryBlur,
+                  disabled:
+                    disabled ||
+                    (countrySelectProps && countrySelectProps.disabled),
+                  readOnly:
+                    readOnly ||
+                    (countrySelectProps && countrySelectProps.readOnly),
+                  iconComponent: this.CountryIcon,
+                }
+              )
+            ),
+            /*#__PURE__*/ React.createElement(
+              InputComponent,
+              _extends(
+                {
+                  ref: this.setInputRef,
+                  type: "tel",
+                  autoComplete: autoComplete,
+                },
+                numberInputProps,
+                rest,
+                {
+                  name: name,
+                  metadata: metadata,
+                  country: country,
+                  value: phoneDigits || "",
+                  onChange: this.onChange,
+                  onFocus: this.onFocus,
+                  onBlur: this.onBlur,
+                  disabled: disabled,
+                  readOnly: readOnly,
+                  inputComponent: inputComponent,
+                  className: classNames(
+                    "PhoneInputInput",
+                    numberInputProps && numberInputProps.className,
+                    rest.className
+                  ),
+                }
+              )
+            )
+          );
+        },
+      },
+    ],
+    [
+      {
+        key: "getDerivedStateFromProps",
+        value:
+          // `state` holds previous props as `props`, and also:
+          // * `country` — The currently selected country, e.g. `"RU"`.
+          // * `value` — The currently entered phone number (E.164), e.g. `+78005553535`.
+          // * `phoneDigits` — The parsed `<input/>` value, e.g. `8005553535`.
+          // (and a couple of other less significant properties)
+          function getDerivedStateFromProps(props, state) {
+            return _objectSpread(
+              {
+                // Emulate `prevProps` via `state.props`.
+                props: props,
+              },
+              getPhoneInputWithCountryStateUpdateFromNewProps(
+                props,
+                state.props,
+                state
+              )
+            );
+          },
+      },
+    ]
+  );
   return PhoneNumberInput_;
-}(React.PureComponent); // This wrapper is only to `.forwardRef()` to the `<input/>`.
-var PhoneNumberInput = /*#__PURE__*/React.forwardRef(function (props, ref) {
-  return /*#__PURE__*/React.createElement(PhoneNumberInput_, _extends({}, props, {
-    inputRef: ref
-  }));
+})(React.PureComponent); // This wrapper is only to `.forwardRef()` to the `<input/>`.
+var PhoneNumberInput = /*#__PURE__*/ React.forwardRef(function (props, ref) {
+  return /*#__PURE__*/ React.createElement(
+    PhoneNumberInput_,
+    _extends({}, props, {
+      inputRef: ref,
+    })
+  );
 });
 PhoneNumberInput.propTypes = {
   /**
@@ -537,7 +880,7 @@ PhoneNumberInput.propTypes = {
    * Future people won't be using "national" format, only "international".
    */
   // (is `undefined` by default)
-  initialValueFormat: PropTypes.oneOf(['national']),
+  initialValueFormat: PropTypes.oneOf(["national"]),
   // `displayInitialValueAsLocalNumber` property has been
   // superceded by `initialValueFormat` property.
   displayInitialValueAsLocalNumber: PropTypes.bool,
@@ -581,7 +924,10 @@ PhoneNumberInput.propTypes = {
    * and can be either a Unicode BCP 47 locale identifier or an array of such locale identifiers.
    * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#locales_argument
    */
-  locales: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+  locales: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string),
+  ]),
   /*
    * Custom country `<select/>` options sorting function.
    * The default one uses `a.localeCompare(b)`, and,
@@ -784,13 +1130,13 @@ PhoneNumberInput.propTypes = {
    *  does not automatically cause a change of context unless the user
    *  has been advised of the behaviour before using the component."
    */
-  focusInputOnCountrySelection: PropTypes.bool.isRequired
+  focusInputOnCountrySelection: PropTypes.bool.isRequired,
 };
 PhoneNumberInput.defaultProps = {
   /**
    * Remember (and autofill) the value as a phone number.
    */
-  autoComplete: 'tel',
+  autoComplete: "tel",
   /**
    * Country `<select/>` component.
    */
@@ -803,7 +1149,7 @@ PhoneNumberInput.defaultProps = {
    * By default, uses icons from `country-flag-icons` gitlab pages website.
    */
   // Must be equal to `flagUrl` in `./CountryIcon.js`.
-  flagUrl: 'https://purecatamphetamine.github.io/country-flag-icons/3x2/{XX}.svg',
+  flagUrl: "/img/country-flag-icons/3x2/{XX}.svg",
   /**
    * Default "International" country `<select/>` option icon.
    */
@@ -811,11 +1157,11 @@ PhoneNumberInput.defaultProps = {
   /**
    * Phone number `<input/>` component.
    */
-  inputComponent: 'input',
+  inputComponent: "input",
   /**
    * Wrapping `<div/>` component.
    */
-  containerComponent: 'div',
+  containerComponent: "div",
   /**
    * Some users requested a way to reset the component:
    * both number `<input/>` and country `<select/>`.
@@ -863,7 +1209,7 @@ PhoneNumberInput.defaultProps = {
    *  does not automatically cause a change of context unless the user
    *  has been advised of the behaviour before using the component."
    */
-  focusInputOnCountrySelection: true
+  focusInputOnCountrySelection: true,
 };
 export default PhoneNumberInput;
 function areEqualArrays(a, b) {
